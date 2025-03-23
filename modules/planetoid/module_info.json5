@@ -1,0 +1,9 @@
+{
+    name: "Planetoid",
+    version_string: "0.1.0",
+    version: 1,
+    description: [
+        "Built-in Planetoid resources"
+    ],
+    authors: "steve6472"
+}
