@@ -2,8 +2,8 @@ package steve6472.planetoid.world;
 
 import steve6472.core.log.Log;
 import steve6472.core.registry.Key;
-import steve6472.planetoid.Systems;
 import steve6472.planetoid.event.PlanetoidEvents;
+import steve6472.planetoid.system.WorldSystems;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -17,12 +17,12 @@ public class Universe
 {
     private static final Logger LOGGER = Log.getLogger(Universe.class);
 
-    public final Systems systems;
+    public final WorldSystems systems;
     public final Map<Key, World> worlds;
 
     public Universe()
     {
-        systems = new Systems();
+        systems = new WorldSystems(null);
         worlds = new LinkedHashMap<>();
         createSystems();
     }
@@ -32,7 +32,7 @@ public class Universe
     {
         if (worlds.containsKey(key))
             throw new RuntimeException("Tried to create World with duplicate key '%s'".formatted(key));
-        World world = new World(key, systems.createCopy(), this);
+        World world = new World(key, systems, false, this);
         worlds.put(key, world);
         return world;
     }
@@ -43,7 +43,7 @@ public class Universe
     {
         if (worlds.containsKey(key))
             throw new RuntimeException("Tried to create special World with duplicate key '%s'".formatted(key));
-        World world = new World(key, systems.createSpecialCopy(), this);
+        World world = new World(key, systems, true, this);
         worlds.put(key, world);
         return world;
     }
@@ -53,22 +53,9 @@ public class Universe
         worlds.forEach((_, world) -> world.tick());
     }
 
-    /*
-     * Systems
-     */
-
-    public void runWorldSystems(World world)
-    {
-        synchronized (world.ecs())
-        {
-            systems.run();
-        }
-    }
-
     private void createSystems()
     {
-        LOGGER.finer("Creating World Systems");
-        PlanetoidEvents.CREATE_WORLD_SYSTEMS.trigger(systems);
-        PlanetoidEvents.CREATE_WORLD_SYSTEMS.printLast(LOGGER, "Created World Systems");
+        LOGGER.finer("Creating Universe Systems");
+        PlanetoidEvents.CREATE_UNIVERSE_SYSTEMS.trigger(systems);
     }
 }

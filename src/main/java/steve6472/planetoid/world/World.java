@@ -2,10 +2,12 @@ package steve6472.planetoid.world;
 
 import dev.dominion.ecs.api.Dominion;
 import dev.dominion.ecs.api.Entity;
-import steve6472.planetoid.Systems;
 import steve6472.core.log.Log;
 import steve6472.core.registry.Key;
 import steve6472.core.util.Profiler;
+import steve6472.planetoid.event.EntitySpawnEvent;
+import steve6472.planetoid.event.PlanetoidEvents;
+import steve6472.planetoid.system.WorldSystems;
 
 import java.util.logging.Logger;
 
@@ -20,17 +22,25 @@ public class World
 
     public final Universe universe;
     public final Key key;
-    public final Systems systems;
+    public final WorldSystems systems;
 
     private final Dominion worldEcs;
 
-    World(Key key, Systems systems, Universe universe)
+    World(Key key, WorldSystems copyFrom, boolean copyEntries, Universe universe)
     {
         this.key = key;
-        this.systems = systems;
+
+        this.systems = new WorldSystems(this);
+        if (copyFrom != null)
+        {
+            systems.fillFrom(copyFrom, copyEntries);
+        }
+
         this.universe = universe;
 
         worldEcs = Dominion.create(key.toString());
+
+        PlanetoidEvents.WORLD_CREATED.trigger(this);
     }
 
     public Dominion ecs()
@@ -40,7 +50,7 @@ public class World
 
     public void tick()
     {
-        systems.run();
+        systems.runSystems();
     }
 
     public Profiler profiler()
@@ -48,11 +58,18 @@ public class World
         return systems.profiler;
     }
 
-    public Entity spawnEntity(Object[] components)
+    public Entity spawnEntity(Object... components)
     {
         Entity entity = worldEcs.createEntity(components);
 
-        // TODO: spawn entity event
+        // TODO: cancellable event
+        EntitySpawnEvent event = new EntitySpawnEvent(this, entity);
+        PlanetoidEvents.ENTITY_SPAWN.trigger(event);
+        if (event.isCancelled())
+        {
+            worldEcs.deleteEntity(entity);
+            return null;
+        }
 
         return entity;
     }

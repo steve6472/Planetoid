@@ -12,21 +12,18 @@ import java.util.logging.Logger;
  * Date: 3/1/2024
  * Project: Domin <br>
  */
-public class Systems
+public abstract class Systems<T>
 {
     private static final Logger LOGGER = Log.getLogger(Systems.class);
-    public final Map<Key, SystemEntry> systemEntries = new LinkedHashMap<>();
+    public final Map<Key, SystemEntry<T>> systemEntries = new LinkedHashMap<>();
     public Profiler profiler = new Profiler(15);
 
-    public void run()
-    {
-        runSystems();
-    }
+    protected abstract void run(T system);
 
-    private void runSystems()
+    public void runSystems()
     {
         profiler.start();
-        for (SystemEntry entry : systemEntries.values())
+        for (SystemEntry<T> entry : systemEntries.values())
         {
             if (!entry.enabled)
                 continue;
@@ -34,7 +31,7 @@ public class Systems
             entry.profiler.start();
             try
             {
-                entry.system.run();
+                run(entry.system);
             } catch (Exception exception)
             {
                 LOGGER.severe("System '%s' threw an error: %s".formatted(entry.key, exception.getMessage()));
@@ -46,35 +43,30 @@ public class Systems
         profiler.end();
     }
 
-    public Systems createCopy()
+    public void fillFrom(Systems<T> systems, boolean copyEntries)
     {
-        Systems systems = new Systems();
-        systems.systemEntries.putAll(systemEntries);
-        return systems;
+        if (copyEntries)
+        {
+            systemEntries.putAll(systems.systemEntries);
+        } else
+        {
+            systems.systemEntries.forEach((key, value) -> systemEntries.put(key, value.copy()));
+        }
     }
 
-    public Systems createSpecialCopy()
-    {
-        Systems systems = new Systems();
-        systemEntries.forEach((key, value) -> {
-            systems.systemEntries.put(key, value.copy());
-        });
-        return systems;
-    }
-
-    public SystemEntry getSystem(Key key)
+    public SystemEntry<T> getSystem(Key key)
     {
         return systemEntries.get(key);
     }
 
-    public void registerSystem(SystemEntry system)
+    public void registerSystem(SystemEntry<T> system)
     {
         systemEntries.put(system.key, system);
     }
 
-    public void registerSystemBefore(Key before, SystemEntry system)
+    public void registerSystemBefore(Key before, SystemEntry<T> system)
     {
-        Map<Key, SystemEntry> copy = new LinkedHashMap<>(systemEntries);
+        Map<Key, SystemEntry<T>> copy = new LinkedHashMap<>(systemEntries);
         systemEntries.clear();
         copy.forEach((key, value) -> {
             if (key.equals(before))
@@ -85,9 +77,9 @@ public class Systems
         });
     }
 
-    public void registerSystemAfter(Key before, SystemEntry system)
+    public void registerSystemAfter(Key before, SystemEntry<T> system)
     {
-        Map<Key, SystemEntry> copy = new LinkedHashMap<>(systemEntries);
+        Map<Key, SystemEntry<T>> copy = new LinkedHashMap<>(systemEntries);
         systemEntries.clear();
         copy.forEach((key, value) -> {
             systemEntries.put(key, value);
@@ -96,5 +88,11 @@ public class Systems
                 systemEntries.put(system.key, system);
             }
         });
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Systems{" + "systemEntries=" + systemEntries + ", profiler=" + profiler + '}';
     }
 }

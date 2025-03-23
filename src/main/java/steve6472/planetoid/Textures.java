@@ -55,13 +55,5 @@ public final class Textures
      */
 
     public static final TextureData ENTITY_ATLAS = Textures.readTextureResource(TEXTURE_ATLAS_PATH);
-    public static final TextureData SPACE_ROCK_ATLAS = Textures.readTextureResource(SPACE_ROCK_PATH);
-    public static final TextureData FIROCK_ATLAS = Textures.readTextureResource("firock.png");
-    public static final TextureData GRAYSCALE_ROCK_ATLAS = Textures.readTextureResource("grayscale_rock.png");
-    public static final TextureData GRAYSCALE_ROCK_SHARP_ATLAS = Textures.readTextureResource("grayscale_rock_sharp.png");
-    public static final TextureData UI_COMPONENTS = Textures.readTextureResource("ui_components.png");
-    public static final TextureData ADJECENT_GRADIENT = Textures.readTextureResource("adjacent_gradient.png");
-    public static final TextureData ADJECENT_GRADIENT_BLOCKY = Textures.readTextureResource("adjacent_gradient_blocky.png");
-    public static final TextureData DRAGON = Textures.readTextureResource("dragon.png");
-    public static final TextureData DRAGON_FIRE = Textures.readTextureResource("dragon_fire.png");
+    public static final TextureData UI_COMPONENTS = Textures.readTextureResource(TEXTURE_ATLAS_PATH);
 }

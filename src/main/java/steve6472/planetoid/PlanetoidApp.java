@@ -15,7 +15,9 @@ import steve6472.core.util.JarExport;
 import steve6472.core.util.Profiler;
 import steve6472.planetoid.event.PlanetoidEvents;
 import steve6472.planetoid.sound.GameSound;
+import steve6472.planetoid.system.RenderSystems;
 import steve6472.planetoid.world.Universe;
+import steve6472.planetoid.world.World;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,8 +47,9 @@ public abstract class PlanetoidApp
     private Scheduler mainScheduler;
     public static long tick = 0;
 
-    public final Systems renderSystems = new Systems();
+    public RenderSystems renderSystems;
     private Universe universe;
+    private World currentWorld;
 
     private Debug debug;
 
@@ -78,18 +81,20 @@ public abstract class PlanetoidApp
         PlanetoidRegistries.createContents();
     }
 
-    protected void createFrame(String title)
-    {
-        this.frame = new RenderFrame("ECS Test", windowWidth, windowHeight, pixelSize);
-        this.input = frame.input;
-        this.render = frame.render;
-    }
-
     protected void setWindowSize(int width, int height, int pixelSize)
     {
         this.pixelSize = pixelSize;
         this.windowWidth = width * pixelSize;
         this.windowHeight = height * pixelSize;
+    }
+
+    protected void createFrame(String title)
+    {
+        this.frame = new RenderFrame(title, windowWidth, windowHeight, pixelSize);
+        this.input = frame.input;
+        this.render = frame.render;
+        this.renderSystems = new RenderSystems(render);
+        PlanetoidEvents.CREATE_RENDER_SYSTEMS.trigger(renderSystems);
     }
 
     protected void startLoop()
@@ -101,12 +106,15 @@ public abstract class PlanetoidApp
         {
             mainProfiler.start();
             PlanetoidEvents.TICK_PRE.trigger();
-
-            PlanetoidEvents.FRAME_PRE.trigger(mainScheduler.deltaTime());
-            renderSystems.run();
-            PlanetoidEvents.FRAME_POST.trigger(mainScheduler.deltaTime());
-
+            universe.tick();
             PlanetoidEvents.TICK_POST.trigger();
+
+            render.fillRectangle(0, 0, windowWidth, windowHeight, 0xff000000);
+            PlanetoidEvents.FRAME_PRE.trigger(mainScheduler.deltaTime());
+            renderSystems.runSystems();
+            PlanetoidEvents.FRAME_POST.trigger(mainScheduler.deltaTime());
+            render.render();
+
             mainProfiler.end();
             tick++;
         });
@@ -133,6 +141,23 @@ public abstract class PlanetoidApp
         universe = new Universe();
     }
     protected void letThereBeLight() { createUniverse(); }
+
+    public Universe universe()
+    {
+        if (universe == null)
+        {
+            LOGGER.severe("No Universe created! run createUniverse or letThereBeLight to create a universe!");
+        }
+
+        return universe;
+    }
+
+    public void setWorld(World world)
+    {
+        this.currentWorld = world;
+        if (renderSystems != null)
+            renderSystems.setWorld(world);
+    }
 
     protected void disableDominionLog()
     {

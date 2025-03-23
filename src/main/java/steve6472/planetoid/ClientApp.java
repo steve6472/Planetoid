@@ -40,7 +40,7 @@ public class ClientApp
     private final Render render;
     private final Input input;
 
-    public final Systems clientSystems;
+//    public final Systems clientSystems;
     public final Profiler worldRenderProfiler = new Profiler(10);
     public final Profiler clientRenderProfiler = new Profiler(10);
 
@@ -58,7 +58,7 @@ public class ClientApp
         this.guiRender = new Pixels(frame, frame.createAndAddImage(WINDOW_WIDTH / PIXEL_SIZE, WINDOW_HEIGHT / PIXEL_SIZE, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR));
         this.guiRender.setAtlas(Textures.UI_COMPONENTS);
 
-        this.clientSystems = new Systems();
+//        this.clientSystems = new Systems();
 
         createRenderingSystems();
 
@@ -82,7 +82,7 @@ public class ClientApp
         {
             //TODO: run screen clear here
             renderWorld();
-            clientSystems.run();
+//            clientSystems.run();
         }
     }
 

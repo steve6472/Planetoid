@@ -10,9 +10,9 @@ import java.util.Locale;
  * Date: 2/25/2024
  * Project: Domin <br>
  */
-public class SystemEntry
+public class SystemEntry<T>
 {
-    public Runnable system;
+    public T system;
     public boolean enabled;
     public boolean debug;
 
@@ -27,7 +27,7 @@ public class SystemEntry
         this.key = key;
     }
 
-    public SystemEntry copy()
+    public SystemEntry<T> copy()
     {
         return of(key, debug, description, enabled, system);
     }
@@ -36,34 +36,40 @@ public class SystemEntry
      *
      */
 
-    public static SystemEntry of(Key key, Runnable system)
+    public static <T> SystemEntry<T> of(Key key, T system)
     {
         return of(key, "", system);
     }
 
-    public static SystemEntry of(Key key, String description, Runnable system)
+    public static <T> SystemEntry<T> of(Key key, String description, T system)
     {
         return of(key, false, description, true, system);
     }
 
-    public static SystemEntry ofDebug(Key key, String description, Runnable system)
+    public static <T> SystemEntry<T> ofDebug(Key key, String description, T system)
     {
         return of(key, true, description, true, system);
     }
 
-    public static SystemEntry ofDebug(Key key, boolean enabled, String description, Runnable system)
+    public static <T> SystemEntry<T> ofDebug(Key key, boolean enabled, String description, T system)
     {
         return of(key, true, description, enabled, system);
     }
 
-    public static SystemEntry of(Key key, boolean debug, String description, boolean enabled, Runnable system)
+    public static <T> SystemEntry<T> of(Key key, boolean debug, String description, boolean enabled, T system)
     {
-        SystemEntry entry = new SystemEntry(key);
+        SystemEntry<T> entry = new SystemEntry<>(key);
         entry.system = system;
         entry.enabled = enabled;
         entry.debug = debug;
         entry.name = key.id().toLowerCase(Locale.ROOT).replace('_', ' ');
         entry.description = description;
         return entry;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "SystemEntry{" + "enabled=" + enabled + ", debug=" + debug + ", key=" + key + ", name='" + name + '\'' + ", description='" + description + '\'' + ", profiler=" + profiler + '}';
     }
 }
