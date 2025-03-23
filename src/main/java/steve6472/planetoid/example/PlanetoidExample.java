@@ -1,5 +1,6 @@
 package steve6472.planetoid.example;
 
+import steve6472.core.util.RandomUtil;
 import steve6472.planetoid.PlanetoidApp;
 import steve6472.planetoid.PlanetoidConstants;
 import steve6472.planetoid.world.World;
@@ -25,14 +26,12 @@ class PlanetoidExample extends PlanetoidApp
         letThereBeLight();
 
         World testWorld = universe().createWorld(PlanetoidConstants.key("example"));
-        testWorld.spawnEntity(new Position(64, 64), new Direction());
-        testWorld.spawnEntity(new Position(64, 64), new Direction());
-        testWorld.spawnEntity(new Position(64, 64), new Direction());
-        testWorld.spawnEntity(new Position(64, 64), new Direction());
-        testWorld.spawnEntity(new Position(64, 64), new Direction());
-        testWorld.spawnEntity(new Position(64, 64), new Direction());
-        testWorld.spawnEntity(new Position(64, 64), new Direction());
         setWorld(testWorld);
+
+        for (int i = 0; i < 16; i++)
+        {
+            testWorld.spawnEntity(new Position(64, 64), new Direction(RandomUtil.randomRadian()));
+        }
 
         startLoop();
         startDebugger();
@@ -40,6 +39,6 @@ class PlanetoidExample extends PlanetoidApp
 
     public static void main(String[] args)
     {
-        PlanetoidExample test = new PlanetoidExample();
+        new PlanetoidExample();
     }
 }

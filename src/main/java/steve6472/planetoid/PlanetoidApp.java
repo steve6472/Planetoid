@@ -159,6 +159,11 @@ public abstract class PlanetoidApp
             renderSystems.setWorld(world);
     }
 
+    public World getCurrentWorld()
+    {
+        return currentWorld;
+    }
+
     protected void disableDominionLog()
     {
         System.setProperty("dominion.world.size", "LARGE");

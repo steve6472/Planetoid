@@ -8,4 +8,9 @@ package steve6472.planetoid.example;
 class Direction
 {
     public double angle;
+
+    public Direction(double angle)
+    {
+        this.angle = angle;
+    }
 }
