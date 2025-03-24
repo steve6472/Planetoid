@@ -23,10 +23,8 @@ class PlanetoidExampleQuick extends PlanetoidAppQuick
     @Override
     protected void registerEvents()
     {
-        PlanetoidEvents.CREATE_RENDER_SYSTEMS.addListener(systems -> systems.registerSystems(TestRenderSystems.class, RenderSystem.WRAPPER));
-
-        PlanetoidEvents.CREATE_RENDER_SYSTEMS.addListener(systems -> systems.registerSystems(TestMixedSystems.class, RenderSystem.WRAPPER));
-        PlanetoidEvents.CREATE_UNIVERSE_SYSTEMS.addListener(systems -> systems.registerSystems(TestMixedSystems.class, WorldSystem.WRAPPER));
+        registerRenderSystems(TestRenderSystems.class, TestMixedSystems.class);
+        registerWorldSystems(TestMixedSystems.class);
 
         TestUniverseSystems.register();
     }

@@ -15,7 +15,9 @@ import steve6472.core.util.JarExport;
 import steve6472.core.util.Profiler;
 import steve6472.planetoid.event.PlanetoidEvents;
 import steve6472.planetoid.sound.GameSound;
+import steve6472.planetoid.system.RenderSystem;
 import steve6472.planetoid.system.RenderSystems;
+import steve6472.planetoid.system.WorldSystem;
 import steve6472.planetoid.world.Universe;
 import steve6472.planetoid.world.World;
 
@@ -141,6 +143,22 @@ public abstract class PlanetoidApp
         universe = new Universe();
     }
     protected void letThereBeLight() { createUniverse(); }
+
+    protected void registerRenderSystems(Class<?>... classes)
+    {
+        for (Class<?> clazz : classes)
+        {
+            PlanetoidEvents.CREATE_RENDER_SYSTEMS.addListener(systems -> systems.registerSystems(clazz, RenderSystem.WRAPPER));
+        }
+    }
+
+    protected void registerWorldSystems(Class<?>... classes)
+    {
+        for (Class<?> clazz : classes)
+        {
+            PlanetoidEvents.CREATE_UNIVERSE_SYSTEMS.addListener(systems -> systems.registerSystems(clazz, WorldSystem.WRAPPER));
+        }
+    }
 
     public Universe universe()
     {
