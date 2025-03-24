@@ -12,7 +12,7 @@ import java.util.List;
  * Project: Domin <br>
  */
 @SuppressWarnings("ALL")
-public class Sorting
+class Sorting
 {
     /*
      * Window constants

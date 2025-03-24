@@ -1,9 +1,7 @@
 package steve6472.planetoid.example;
 
-import steve6472.planetoid.PlanetoidConstants;
-import steve6472.planetoid.SystemEntry;
+import steve6472.planetoid.ComponentSystem;
 import steve6472.planetoid.api.Render;
-import steve6472.planetoid.event.PlanetoidEvents;
 import steve6472.planetoid.world.World;
 
 /**
@@ -13,25 +11,18 @@ import steve6472.planetoid.world.World;
  */
 public class TestRenderSystems
 {
-    public static void register()
-    {
-        PlanetoidEvents.CREATE_RENDER_SYSTEMS.addListener(systems ->
-        {
-            systems.registerSystem(SystemEntry.of(PlanetoidConstants.key("render"), TestRenderSystems::render));
-            systems.registerSystem(SystemEntry.of(PlanetoidConstants.key("render_direction"), TestRenderSystems::renderDirection));
-        });
-    }
-
+    @ComponentSystem("planetoid:render")
     private static void render(Render render, World world)
     {
         var entities = world.ecs().findEntitiesWith(Position.class);
         entities.forEach(entityData ->
         {
             Position pos = entityData.comp();
-            render.fillRectangle(pos.x - 2, pos.y - 2, 5, 5, 0xffff00ff);
+            render.fillRectangle(pos.x - 2, pos.y - 2, 5, 5, 0xff800080);
         });
     }
 
+    @ComponentSystem("planetoid:render_direction")
     private static void renderDirection(Render render, World world)
     {
         var entities = world.ecs().findEntitiesWith(Direction.class, Position.class);

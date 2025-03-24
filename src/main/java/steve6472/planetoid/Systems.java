@@ -4,7 +4,13 @@ import steve6472.core.log.Log;
 import steve6472.core.registry.Key;
 import steve6472.core.util.Profiler;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 /**
@@ -62,6 +68,58 @@ public abstract class Systems<T>
     public void registerSystem(SystemEntry<T> system)
     {
         systemEntries.put(system.key, system);
+    }
+
+    public static void wrapped(Object[] objs, Object... args)
+    {
+        try
+        {
+            ((Method) objs[0]).invoke(null, args);
+        } catch (IllegalAccessException | InvocationTargetException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void registerSystems(Class<?> clazz, Function<Object[], T> wrapper)
+    {
+        T typeDummyInstance = wrapper.apply(null);
+        Method[] methods = typeDummyInstance.getClass().getDeclaredMethods();
+        if (methods.length == 0)
+            throw new RuntimeException("System has no methods to run!");
+        Method interfaceMethod = methods[0];
+        Class<?>[] typeParameterTypes = interfaceMethod.getParameterTypes();
+
+        Method[] declaredMethods = clazz.getDeclaredMethods();
+        for (Method declaredMethod : declaredMethods)
+        {
+            declaredMethod.setAccessible(true);
+            ComponentSystem annotation = declaredMethod.getAnnotation(ComponentSystem.class);
+            if (annotation == null)
+                continue;
+
+            Class<?>[] methodParameterTypes = declaredMethod.getParameterTypes();
+            if (!Arrays.equals(typeParameterTypes, methodParameterTypes))
+                continue;
+
+            if (annotation.type() != Void.class && !annotation.type().equals(typeDummyInstance.getClass()))
+                continue;
+
+            String value = annotation.value();
+            Key key;
+            if (value.contains(":"))
+            {
+                String[] split = value.split(":");
+                key = Key.withNamespace(split[0], split[1]);
+            } else
+            {
+                key = Key.defaultNamespace(value);
+            }
+
+            Object[] arr = {declaredMethod};
+            T apply = wrapper.apply(arr);
+            registerSystem(SystemEntry.of(key, apply));
+        }
     }
 
     public void registerSystemBefore(Key before, SystemEntry<T> system)

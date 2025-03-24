@@ -17,8 +17,8 @@ public class Universe
 {
     private static final Logger LOGGER = Log.getLogger(Universe.class);
 
+    private final Map<Key, World> worlds;
     public final WorldSystems systems;
-    public final Map<Key, World> worlds;
 
     public Universe()
     {
@@ -46,6 +46,11 @@ public class Universe
         World world = new World(key, systems, true, this);
         worlds.put(key, world);
         return world;
+    }
+
+    public World getWorld(Key key)
+    {
+        return worlds.get(key);
     }
 
     public void tick()

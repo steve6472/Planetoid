@@ -40,14 +40,14 @@ final class TestUniverseSystems
 
     private static void moveSystem(World world)
     {
-        final float SPEED = 0.3f;
-        var entities = world.ecs().findEntitiesWith(Direction.class, Position.class);
+        var entities = world.ecs().findEntitiesWith(Direction.class, Position.class, Speed.class);
         entities.forEach(entityData ->
         {
             Direction dir = entityData.comp1();
             Position pos = entityData.comp2();
-            pos.x += (float) Math.sin(dir.angle) * SPEED;
-            pos.y += (float) Math.cos(dir.angle) * SPEED;
+            Speed speed = entityData.comp3();
+            pos.x += (float) (Math.sin(dir.angle) * speed.value);
+            pos.y += (float) (Math.cos(dir.angle) * speed.value);
         });
     }
 }
