@@ -55,5 +55,4 @@ public final class Textures
      */
 
     public static final TextureData ENTITY_ATLAS = Textures.readTextureResource(TEXTURE_ATLAS_PATH);
-    public static final TextureData UI_COMPONENTS = Textures.readTextureResource(TEXTURE_ATLAS_PATH);
 }
