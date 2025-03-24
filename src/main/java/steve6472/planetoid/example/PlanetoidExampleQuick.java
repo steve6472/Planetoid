@@ -2,16 +2,9 @@ package steve6472.planetoid.example;
 
 import org.jetbrains.annotations.NotNull;
 import steve6472.core.util.RandomUtil;
-import steve6472.planetoid.PlanetoidApp;
 import steve6472.planetoid.PlanetoidAppQuick;
 import steve6472.planetoid.PlanetoidConstants;
-import steve6472.planetoid.Systems;
-import steve6472.planetoid.event.PlanetoidEvents;
-import steve6472.planetoid.system.RenderSystem;
-import steve6472.planetoid.system.WorldSystem;
 import steve6472.planetoid.world.World;
-
-import java.util.function.Function;
 
 /**
  * Created by steve6472

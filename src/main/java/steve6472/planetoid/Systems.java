@@ -4,13 +4,10 @@ import steve6472.core.log.Log;
 import steve6472.core.registry.Key;
 import steve6472.core.util.Profiler;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.*;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 /**

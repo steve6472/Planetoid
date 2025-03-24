@@ -22,7 +22,7 @@ public class PlanetoidScheduler
 
     public static void scheduleDelayedTask(final long delay, Runnable runnable)
     {
-        final long tck = Main.tick;
+        final long tck = PlanetoidApp.tick;
         delayedTasks.add(new Pair<>(tck + delay, runnable));
     }
 
@@ -42,7 +42,7 @@ public class PlanetoidScheduler
                     break;
 
                 Pair<Long, Runnable> longProcedurePair = delayedTasks.getFirst();
-                if (longProcedurePair.getFirst() <= Main.tick)
+                if (longProcedurePair.getFirst() <= PlanetoidApp.tick)
                 {
                     delayedTasks.removeFirst();
                     longProcedurePair.getSecond().run();

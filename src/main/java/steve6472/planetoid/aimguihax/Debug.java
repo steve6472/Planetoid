@@ -19,7 +19,6 @@ import org.lwjgl.opengl.GL11;
 import imgui.app.Configuration;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.type.ImBoolean;
-import steve6472.planetoid.Main;
 import steve6472.planetoid.SystemEntry;
 import steve6472.planetoid.Systems;
 import steve6472.planetoid.angine.UserInput;
@@ -95,7 +94,7 @@ public class Debug extends Application
 
         ImGui.sameLine();
         ImGui.text("Last debug processing took: %.5f ms".formatted(debugProfiler.averageMilli()));
-        ImGui.text("Main scheduler: %.5f ms".formatted(Main.mainSchedulerProfiler.averageMilli()));
+//        ImGui.text("Main scheduler: %.5f ms".formatted(Main.mainSchedulerProfiler.averageMilli()));
         
         ImGui.beginTabBar("tabs");
 
